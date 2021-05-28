@@ -10,6 +10,12 @@ export default class TodayImage extends Component {
                         <h1>Today's Image...</h1>
                     </div>
 
+                    <div className='row my-3'>
+                    <div className='col-12 d-flex justify-contents-center'>
+                    <img src={`${this.props.image}`} alt="" className="today-image"></img>
+                    </div>
+                    </div>
+
                 </div>
             </div>
         )

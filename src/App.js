@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router';
 import './App.css';
+import Message from './components/Message';
 import Navbar from './components/Navbar';
 import CreatePost from './views/CreatePost';
 import Home from './views/Home';
@@ -17,17 +18,59 @@ export default class App extends Component {
 
     this.state = {
       imageAPICalled: false,
-      image: null
+      image: null,
+      message: null,
+      category: null
+    }
+  }
+
+  addMessage = (message, category) => {
+    this.setState({
+      message: message,
+      category: category
+    })
+  }
+
+  clearMessage = () => {
+    this.setState({
+      message: null,
+      category: null
+    })
+  }
+
+  handleLogin(e) {
+    e.preventDefault();
+    let username = e.target.username.value;
+    let password = e.target.password.value;
+    // Send this to the endpoint
+    console.log(username, password)
+  }
+
+  handleRegister(e) {
+    e.preventDefault();
+    let username = e.target.username.value;
+    let email = e.target.email.value;
+    let password = e.target.password.value;
+    let confirmpass = e.target.confirmpassword.value;
+    if (password !== confirmpass) {
+      this.addMessage('Please make sure your passwords match and try again', 'danger');
+    } else {
+      // Send this to the endpoint
+      console.log(username, email, password, confirmpass);
     }
   }
 
   componentDidMount() {
-    // Go and check the back-end
-    // If the image there is more than 24 hours old
     if (this.state.imageAPICalled === false) {
       this.generateNewImage()
     }
-    setInterval(this.generateNewImage, 86400000);
+    setInterval(this.setAPIState, 86400000);
+  }
+
+  setAPIState() {
+    this.setState({
+      imageAPICalled: false
+    })
   }
 
   generateNewImage = () => {
@@ -35,13 +78,15 @@ export default class App extends Component {
       fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=false')
         .then(res => res.json())
         .then(data => this.setState({
-            image: data
+            image: data,
+            imageAPICalled: true
         }))
     } else if ((Math.floor(Math.random() * 10) % 2) !== 0) {
       fetch('http://shibe.online/api/cats?count=1&urls=true&httpsUrls=false')
         .then(res => res.json())
         .then(data => this.setState({
-          image: data
+          image: data,
+          imageAPICalled: true
         }))
     }
   }
@@ -57,13 +102,15 @@ export default class App extends Component {
               <Navbar />
             </div>
           </div>
-  
+
+          {this.state.message ? (<Message message={this.state.message} category={this.state.category} clearMessage={this.clearMessage} />) : (<div></div>)}
+          
   
           <Switch>
             <Route exact path='/' render={() => <Home image={this.state.image} />} />
-            <Route exact path='/login' render={() => <Login />} />
-            <Route exact path='/register' render={() => <Register />} />
-            <Route exact path='/today' render={() => <TodayImage />} />
+            <Route exact path='/login' render={() => <Login handleLogin={this.handleLogin} />} />
+            <Route exact path='/register' render={() => <Register handleRegister={this.handleRegister} addMessage={this.addMessage} />} />
+            <Route exact path='/today' render={() => <TodayImage image={this.state.image} />} />
             <Route exact path='/winners' render={() => <WinnerArchive />} />
             <Route exact path='/post/:id' render={({match}) => <PostDetail match={match} />} />
             <Route exact path='/post/update/:id' render={({match}) => <UpdatePost match={match} />} />

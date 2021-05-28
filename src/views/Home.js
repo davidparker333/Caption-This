@@ -44,8 +44,8 @@ export default class Home extends Component {
                 </div>
 
                 <div className='row my-3'>
-                    <div className='col-12'>
-                    <img src={`${this.props.image}`} alt=""></img>
+                    <div className='col-12 d-flex justify-contents-center'>
+                    <img src={`${this.props.image}`} alt="" className="today-image"></img>
                     </div>
                 </div>
 
