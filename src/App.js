@@ -1,51 +1,79 @@
+import React, { Component } from 'react';
+import { Route, Switch } from 'react-router';
 import './App.css';
 import Navbar from './components/Navbar';
+import CreatePost from './views/CreatePost';
+import Home from './views/Home';
+import Login from './views/Login';
+import PostDetail from './views/PostDetail';
+import Register from './views/Register';
+import TodayImage from './views/TodayImage';
+import UpdatePost from './views/UpdatePost';
+import WinnerArchive from './views/WinnerArchive';
 
-function App() {
-  return (
-    <div>
-      
-      <div className='container'>
+export default class App extends Component {
+  constructor() {
+    super();
 
-        <div className='row'>
-          <div className='col-12'>
-            <Navbar />
+    this.state = {
+      imageAPICalled: false,
+      image: null
+    }
+  }
+
+  componentDidMount() {
+    // Go and check the back-end
+    // If the image there is more than 24 hours old
+    if (this.state.imageAPICalled === false) {
+      this.generateNewImage()
+    }
+    setInterval(this.generateNewImage, 86400000);
+  }
+
+  generateNewImage = () => {
+    if ((Math.floor(Math.random() * 10) % 2) === 0) {
+      fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=false')
+        .then(res => res.json())
+        .then(data => this.setState({
+            image: data
+        }))
+    } else if ((Math.floor(Math.random() * 10) % 2) !== 0) {
+      fetch('http://shibe.online/api/cats?count=1&urls=true&httpsUrls=false')
+        .then(res => res.json())
+        .then(data => this.setState({
+          image: data
+        }))
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        
+        <div className='container'>
+  
+          <div className='row'>
+            <div className='col-12'>
+              <Navbar />
+            </div>
           </div>
+  
+  
+          <Switch>
+            <Route exact path='/' render={() => <Home image={this.state.image} />} />
+            <Route exact path='/login' render={() => <Login />} />
+            <Route exact path='/register' render={() => <Register />} />
+            <Route exact path='/today' render={() => <TodayImage />} />
+            <Route exact path='/winners' render={() => <WinnerArchive />} />
+            <Route exact path='/post/:id' render={({match}) => <PostDetail match={match} />} />
+            <Route exact path='/post/update/:id' render={({match}) => <UpdatePost match={match} />} />
+            <Route exact path='/create' render={() => <CreatePost />} />
+          </Switch>
+            
         </div>
-
-        <div className='row my-5'>
-
-          {/* Left aligned banner card */}
-          <div className='col-12 col-md-6'>
-          <div className="card border-primary mb-3">
-            <div className="card-body text-primary">
-            <img src="https://res.cloudinary.com/dbqwjxuhv/image/upload/v1622227316/caption-this_pieqrg.jpg" className='banner-img' alt=""></img>
-            </div>
-          </div>
-          </div>
-
-          {/* Right aligned banner card */}
-          <div className='col-12 col-md-6'>
-          <div className="card border-primary mb-3">
-            <div className="card-body">
-              <img src="https://res.cloudinary.com/dbqwjxuhv/image/upload/v1622226164/ctlogo_gdhn2m.png" class="banner-card-img" alt=""></img>
-              <h5 className="card-title">CaptionThis!</h5>
-              <p className="card-text">The site where you compete against your friends to come up with the best caption! Each user is able to vote for their favorite once per day, and the winner will be added to our illustrious Winner's Archive so they can forever relive the glory of victory.</p>
-              <hr />
-              <div className='text-center'><i class="fas fa-trophy"></i><i class="fas fa-trophy"></i><i class="fas fa-trophy"></i></div>
-              <hr />
-              <p className="card-text">Please begin by creating an account / login to view today's captions, or look below for a few of today's top rated captions.</p>
-            </div>
-            </div>
-          </div>
-
-        </div>
-
+  
+  
       </div>
-
-
-    </div>
-  );
+    )
+  }
 }
-
-export default App;
