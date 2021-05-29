@@ -102,7 +102,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    if (this.state.imageAPICalled === false) {
+    if (this.state.imageAPICalled === false || this.state.image == null) {
       this.generateNewImage()
     }
     setInterval(this.setAPIState, 86400000);
@@ -122,7 +122,7 @@ export default class App extends Component {
             image: data,
             imageAPICalled: true
         }))
-    } else if ((Math.floor(Math.random() * 10) % 2) !== 0) {
+    } else {
       fetch('http://shibe.online/api/cats?count=1&urls=true&httpsUrls=false')
         .then(res => res.json())
         .then(data => this.setState({
@@ -152,10 +152,10 @@ export default class App extends Component {
             <Route exact path='/login' render={() => <Login handleLogin={this.handleLogin} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path='/register' render={() => <Register handleRegister={this.handleRegister} addMessage={this.addMessage} />} />
             <Route exact path='/today' render={() => <TodayImage image={this.state.image} />} />
-            <Route exact path='/winners' render={() => <WinnerArchive />} />
+            <Route exact path='/winners' render={() => <WinnerArchive image={this.state.image} />} />
             <Route exact path='/post/:id' render={({match}) => <PostDetail match={match} />} />
             <Route exact path='/post/update/:id' render={({match}) => <UpdatePost match={match} />} />
-            <Route exact path='/create' render={() => <CreatePost />} />
+            <Route exact path='/create' render={() => <CreatePost image={this.state.image} />} />
           </Switch>
             
         </div>

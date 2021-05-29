@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import Top4 from '../components/Top4'
 
 export default class Home extends Component {
@@ -44,12 +45,26 @@ export default class Home extends Component {
                 </div>
 
                 <div className='row my-3'>
-                    <div className='col-12 d-flex justify-contents-center'>
-                    <img src={`${this.props.image}`} alt="" className="today-image"></img>
+                        <div className='col-2'></div>
+                        <div className='col-8'>
+                                <div className="card border-primary mb-3 today-card">
+                                    <div className="card-body text-primary">
+                                        <img src={`${this.props.image}`} alt="" className="today-image"></img>
+                                    </div>
+                                 </div>
+                        </div>
+                        <div className='col-2'></div>
                     </div>
-                </div>
 
                 <Top4 />
+
+                <div className='row'>
+
+                        <div className='col-12'>
+                            <Link to='/create'><button className='btn btn-primary mb-5 wide-button'>Post a Caption</button></Link>
+                        </div>
+
+                    </div>
 
             </div>
         )
