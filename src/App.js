@@ -20,7 +20,8 @@ export default class App extends Component {
       imageAPICalled: false,
       image: null,
       message: null,
-      category: null
+      category: null,
+      isLoggedIn: localStorage.getItem('token') !== null
     }
   }
 
@@ -38,12 +39,34 @@ export default class App extends Component {
     })
   }
 
-  handleLogin(e) {
+  handleLogin = (e) => {
     e.preventDefault();
     let username = e.target.username.value;
     let password = e.target.password.value;
-    // Send this to the endpoint
-    console.log(username, password)
+    fetch('http://localhost:5000/api/login', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+      }
+    }).then(res => res.json())
+      .then(data => {
+        localStorage.setItem('token', data.token);
+        this.addMessage('You have successfully logged in!', 'success');
+        this.setState({
+          isLoggedIn: true
+        })
+      }).catch(e => {
+        console.log(e);
+        this.addMessage("Something doesn't look right. Please try again.", 'danger');
+      })
+  }
+
+  logUserOut = () => {
+    localStorage.removeItem('token');
+    this.addMessage('You are logged out.', 'warning')
+    this.setState({
+      isLoggedIn: false
+    })
   }
 
   handleRegister(e) {
@@ -55,8 +78,26 @@ export default class App extends Component {
     if (password !== confirmpass) {
       this.addMessage('Please make sure your passwords match and try again', 'danger');
     } else {
-      // Send this to the endpoint
-      console.log(username, email, password, confirmpass);
+      fetch('http://localhost:5000/api/register', {
+      method: 'POST',
+      headers: {
+        "Content-Type":"application/json",
+        "Accept":"*/*"
+      },
+      body: JSON.stringify([{
+        "username": username,
+        "email": email,
+        "password": password
+      }])
+    }).then(res => res.json())
+      .then(data => {
+        if (data.username != null) {
+          this.addMessage('You have registered successfully!', 'success');
+        }
+      }).catch(e => {
+        console.log(e);
+        this.addMessage("Something doesn't look right. Please try again.", 'danger');
+      })
     }
   }
 
@@ -99,7 +140,7 @@ export default class App extends Component {
   
           <div className='row'>
             <div className='col-12'>
-              <Navbar />
+              <Navbar isLoggedIn={this.state.isLoggedIn} logUserOut={this.logUserOut} />
             </div>
           </div>
 
@@ -108,7 +149,7 @@ export default class App extends Component {
   
           <Switch>
             <Route exact path='/' render={() => <Home image={this.state.image} />} />
-            <Route exact path='/login' render={() => <Login handleLogin={this.handleLogin} />} />
+            <Route exact path='/login' render={() => <Login handleLogin={this.handleLogin} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path='/register' render={() => <Register handleRegister={this.handleRegister} addMessage={this.addMessage} />} />
             <Route exact path='/today' render={() => <TodayImage image={this.state.image} />} />
             <Route exact path='/winners' render={() => <WinnerArchive />} />

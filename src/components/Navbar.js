@@ -21,8 +21,10 @@ export default class Navbar extends Component {
                     <Link className="nav-link active" aria-current="page" to='/winners'>Winner Archive</Link>
                   </li>
                 </ul>
+                {this.props.isLoggedIn ? (<button className='btn btn-outline-primary' onClick={this.props.logUserOut}>Logout</button>) : (
+                  <div>
                 <Link to='/login'><button type="button" className="btn btn-outline-primary mx-1">Login</button></Link>
-                <Link to='/register'><button type="button" className="btn btn-outline-primary mx-1">Register</button></Link>
+                <Link to='/register'><button type="button" className="btn btn-outline-primary mx-1">Register</button></Link> </div> )}
               </div>
                 </div>
             </nav>
