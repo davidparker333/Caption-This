@@ -17,7 +17,6 @@ export default class App extends Component {
     super();
 
     this.state = {
-      imageAPICalled: false,
       image: null,
       message: null,
       category: null,
@@ -126,33 +125,62 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    if (this.state.imageAPICalled === false || this.state.image == null) {
-      this.generateNewImage()
-    }
-    setInterval(this.setAPIState, 86400000);
-  }
-
-  setAPIState() {
-    this.setState({
-      imageAPICalled: false
-    })
+    fetch('http://localhost:5000/api/getdailyimage', {
+      method: 'GET',
+      headers: {
+        "Content-Type":"application/json",
+        "Accept":"*/*"
+      }
+    }).then(res => res.json())
+      .then(data => {
+        let date = new Date();
+        if (data.date_created <= date.setDate(date.getDate()-1)) {
+          this.generateNewImage();
+        } else {
+        let new_image = data.image_url;
+        new_image = new_image.replace('{', '');
+        new_image = new_image.replace('}', '');
+        this.setState({
+          image: new_image
+        })
+        
+      }
+      })
   }
 
   generateNewImage = () => {
     if ((Math.floor(Math.random() * 10) % 2) === 0) {
       fetch('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=false')
         .then(res => res.json())
-        .then(data => this.setState({
-            image: data,
-            imageAPICalled: true
-        }))
+        .then(data => {
+          fetch('http://localhost:5000/api/dailyimage', {
+            method: 'POST',
+            headers: {
+              "Content-Type":"application/json",
+              "Accept":"*/*"
+            },
+            body: JSON.stringify({
+              "image_url": data
+            })
+          }).then(res => res.json())
+            .then(data => console.log(data))
+        })
     } else {
       fetch('http://shibe.online/api/cats?count=1&urls=true&httpsUrls=false')
         .then(res => res.json())
-        .then(data => this.setState({
-          image: data,
-          imageAPICalled: true
-        }))
+        .then(data => {
+          fetch('http://localhost:5000/api/dailyimage', {
+            method: 'POST',
+            headers: {
+              "Content-Type":"application/json",
+              "Accept":"*/*"
+            },
+            body: JSON.stringify({
+              "image_url": data
+            })
+          }).then(res => res.json())
+            .then(data => console.log(data))
+        })
     }
   }
 
