@@ -3,6 +3,27 @@ import { Link } from 'react-router-dom'
 import Top4 from '../components/Top4'
 
 export default class Home extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            posts: []
+        }
+    }
+
+    componentDidMount() {
+        fetch('http://localhost:5000/api/recent', {
+            method: 'GET',
+            headers: {
+                "Content-Type":"application/json",
+                "Accept":"*/*"
+            }
+        }).then(res => res.json())
+            .then(data => this.setState({
+                posts: data
+            }))
+    }
+
     render() {
         return (
             <div>
@@ -56,15 +77,21 @@ export default class Home extends Component {
                         <div className='col-2'></div>
                     </div>
 
-                <Top4 />
+                <div className='row my-3'>
+                    {this.state.posts.map((post, index) => <Top4 username={post.username} key={index} post_body={post.post_body} date_created={post.date_created} votes={post.votes} />)}
+                </div>
 
-                <div className='row'>
-
+                {this.props.isLoggedIn ?
+                    <div className='row'>
                         <div className='col-12'>
                             <Link to='/create'><button className='btn btn-primary mb-5 wide-button'>Post a Caption</button></Link>
                         </div>
-
-                    </div>
+                    </div> :
+                    <div className='row'>
+                        <div className='col-12'>
+                            <Link to='/login'><button className='btn btn-primary mb-5 wide-button'>Login to Post a Caption</button></Link>
+                        </div>
+                        </div>}
 
             </div>
         )

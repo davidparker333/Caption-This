@@ -1,7 +1,30 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import Post from '../components/Post'
 
 export default class TodayImage extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            posts: []
+        }
+    }
+
+    componentDidMount() {
+        fetch('http://localhost:5000/api/today', {
+            method: 'GET',
+            headers: {
+                "Content-Type":"application/json",
+                "Accept":"*/*",
+                "Authorization": "Bearer " + localStorage.getItem('token')
+            }
+        }).then(res => res.json())
+            .then(data => this.setState({
+                posts: data
+            }))
+    }
+
     render() {
         return (
             <div>
@@ -25,79 +48,20 @@ export default class TodayImage extends Component {
                     </div>
 
                     <div className='row'>
-
-                        <div className='col-12 col-md-6'>
-                            <div className="card border-info mb-3">
-                                <div className="card-body">
-                                    <h5 className="card-title">Username</h5>
-                                    <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                   
-                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#votemodal">
-                                    Vote for this Caption
-                                    </button>
-
-                                    
-                                    <div class="modal fade" id="votemodal" tabindex="-1" aria-labelledby="votemodalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="votemodalLabel">Are you sure?</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            You can only vote once per day! Is this the caption you want to vote for?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nah</button>
-                                            <button type="button" class="btn btn-primary">Yep!</button>
-                                        </div>
-                                        </div>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='col-12 col-md-6'>
-                            <div className="card border-info mb-3">
-                                    <div className="card-body">
-                                        <h5 className="card-title">Username</h5>
-                                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#votemodal">
-                                    Vote for this Caption
-                                    </button>
-
-                                    
-                                    <div class="modal fade" id="votemodal" tabindex="-1" aria-labelledby="votemodalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="votemodalLabel">Are you sure?</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            You can only vote once per day! Is this the caption you want to vote for?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nah</button>
-                                            <button type="button" class="btn btn-primary">Yep!</button>
-                                        </div>
-                                        </div>
-                                        </div>
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-
+                        {this.state.posts.map((post, index) => <Post username={post.username} key={index} post_body={post.post_body} date_created={post.date_created} votes={post.votes} />)}
                     </div>
 
+                    {this.props.isLoggedIn ?
                     <div className='row'>
-
                         <div className='col-12'>
                             <Link to='/create'><button className='btn btn-primary mb-5 wide-button'>Post a Caption</button></Link>
                         </div>
-
-                    </div>
+                    </div> :
+                    <div className='row'>
+                        <div className='col-12'>
+                            <Link to='/login'><button className='btn btn-primary mb-5 wide-button'>Login to Post a Caption</button></Link>
+                        </div>
+                        </div>}
             </div>
         )
     }

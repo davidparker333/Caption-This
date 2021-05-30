@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 export default class CreatePost extends Component {
+    
     render() {
         return (
             <div>
@@ -19,7 +20,7 @@ export default class CreatePost extends Component {
                       
                      
 
-                    <form action="" method="" onSubmit={(e) => this.props.handleLogin(e)}>
+                    <form action="" method="" onSubmit={(e) => this.props.handleCreatePost(e)}>
                             <div className="form-group d-flex flex-column justify-content-center">
                                 <fieldset className="my-2">
                                     Enter your caption:

@@ -101,6 +101,30 @@ export default class App extends Component {
     }
   }
 
+  handleCreatePost = (e) => {
+    e.preventDefault();
+    let caption = e.target.caption.value;
+    fetch('http://localhost:5000/api/post', {
+      method: 'POST',
+      headers: {
+        "Content-Type":"application/json",
+        "Accept":"*/*",
+        "Authorization": "Bearer " + localStorage.getItem('token')
+      },
+      body: JSON.stringify({
+        "post_body": caption
+      })
+    }).then(res => res.json())
+      .then(data => {
+        if (data.date_created != null) {
+          this.addMessage("Your caption has been posted! Good luck!", 'success');
+        }
+      }).catch(e => {
+        console.log(e);
+        this.addMessage("Something doesn't look right. You need to be logged in to post! Please try again.", 'danger');
+      })
+  }
+
   componentDidMount() {
     if (this.state.imageAPICalled === false || this.state.image == null) {
       this.generateNewImage()
@@ -148,14 +172,14 @@ export default class App extends Component {
           
   
           <Switch>
-            <Route exact path='/' render={() => <Home image={this.state.image} />} />
+            <Route exact path='/' render={() => <Home image={this.state.image} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path='/login' render={() => <Login handleLogin={this.handleLogin} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path='/register' render={() => <Register handleRegister={this.handleRegister} addMessage={this.addMessage} />} />
-            <Route exact path='/today' render={() => <TodayImage image={this.state.image} />} />
+            <Route exact path='/today' render={() => <TodayImage image={this.state.image} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path='/winners' render={() => <WinnerArchive image={this.state.image} />} />
             <Route exact path='/post/:id' render={({match}) => <PostDetail match={match} />} />
             <Route exact path='/post/update/:id' render={({match}) => <UpdatePost match={match} />} />
-            <Route exact path='/create' render={() => <CreatePost image={this.state.image} />} />
+            <Route exact path='/create' render={() => <CreatePost image={this.state.image} handleCreatePost={this.handleCreatePost} />} />
           </Switch>
             
         </div>
