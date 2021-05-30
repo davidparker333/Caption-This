@@ -12,9 +12,10 @@ export default class Post extends Component {
                                     <p className="card-text mx-3">{this.props.post_body}</p>
                                     <p className="card-text small mx-3">{date}</p>
                                    
+                                   {this.props.isLoggedIn ? 
                                     <button type="button" className="btn btn-outline-primary float-end  mx-3" data-bs-toggle="modal" data-bs-target="#votemodal">
                                     {this.props.votes} votes! Vote for this Caption
-                                    </button>
+                                    </button> : <div></div>}
 
                                     
                                     <div className="modal fade" id="votemodal" tabIndex="-1" aria-labelledby="votemodalLabel" aria-hidden="true">

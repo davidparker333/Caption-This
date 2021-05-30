@@ -1,6 +1,28 @@
 import React, { Component } from 'react'
+import Winner from '../components/Winner'
 
 export default class WinnerArchive extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            winners: []
+        }
+    }
+
+    componentDidMount() {
+        fetch('http://localhost:5000/api/getallwinners', {
+            method: 'GET',
+            headers: {
+                "Content-Type":"application/json",
+                "Accept":"*/*"
+            }
+        }).then(res => res.json())
+            .then(data => this.setState({
+                winners: data
+            }))
+    }
+
     render() {
         return (
             <div>
@@ -15,27 +37,7 @@ export default class WinnerArchive extends Component {
 
                 <div className='row'>
 
-                    <div className='col-12 col-md-6'>
-                     <div className="card mb-3">
-                            <img src={this.props.image} className="card-img-top" alt="..." />
-                            <div className="card-body">
-                                <h5 className="card-title">Username</h5>
-                                <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                <p className="card-text"><small className="text-muted">Date: 5/29/21</small></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className='col-12 col-md-6'>
-                        <div className="card mb-3">
-                            <img src={this.props.image} className="card-img-top" alt="..." />
-                            <div className="card-body">
-                                <h5 className="card-title">Username</h5>
-                                <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                <p className="card-text"><small className="text-muted">Date: 5/29/21</small></p>
-                            </div>
-                        </div>
-                    </div>
+                    {this.state.winners.map((winner, index) => <Winner username={winner.winner_username} key={index} post_body={winner.post_body} date_created={winner.date_created} image={winner.image_url} />)}
 
                 </div>
 

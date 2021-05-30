@@ -48,7 +48,7 @@ export default class TodayImage extends Component {
                     </div>
 
                     <div className='row'>
-                        {this.state.posts.map((post, index) => <Post username={post.username} key={index} post_body={post.post_body} date_created={post.date_created} votes={post.votes} />)}
+                        {this.state.posts.map((post, index) => <Post username={post.username} key={index} post_body={post.post_body} date_created={post.date_created} votes={post.votes} isLoggedIn={this.props.isLoggedIn} />)}
                     </div>
 
                     {this.props.isLoggedIn ?
