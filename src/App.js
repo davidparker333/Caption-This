@@ -92,7 +92,7 @@ export default class App extends Component {
     }).then(res => res.json())
       .then(data => {
         if (data.username != null) {
-          this.addMessage('You have registered successfully!', 'success');
+          this.addMessage('You have registered successfully! Please login!', 'success');
         }
       }).catch(e => {
         console.log(e);

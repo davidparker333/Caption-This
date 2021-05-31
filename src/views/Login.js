@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router';
 
 
 export default class Login extends Component {
     render() {
+        if (this.props.isLoggedIn) {
+            return <Redirect to='/today' />
+        }
         return (
             <div>
                 <div className="row">

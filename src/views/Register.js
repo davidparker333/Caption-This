@@ -1,7 +1,27 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router';
 
 export default class Register extends Component {
+    constructor() {
+        super();
+
+        this.state = {
+            redirect: null
+        }
+    }
+
+    registerHelper = (e) => {
+        e.preventDefault();
+        this.props.handleRegister(e);
+        this.setState({
+            redirect: "/login"
+        })
+    }
+
     render() {
+        if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />
+        }
         return (
             <div>
                 <div className="row">
@@ -10,7 +30,7 @@ export default class Register extends Component {
 
                         <h1 className="my-4">Register Here</h1>
 
-                        <form action="" method="" onSubmit={(e) => this.props.handleRegister(e)}>
+                        <form action="" method="" onSubmit={(e) => this.registerHelper(e)}>
                             <div className="form-group d-flex flex-column justify-content-center">
                                 <fieldset className="my-2">
                                     Username:
