@@ -7,13 +7,44 @@ export default class TodayImage extends Component {
         super();
 
         this.state = {
-            posts: []
+            posts: [],
+            voted: false
         }
     }
 
     castVote = (e) => {
         e.preventDefault();
-        console.log(e.target.name);
+        let post_id = e.target.name;
+        fetch(`http://localhost:5000/api/vote/${post_id}`, {
+            method: 'POST',
+            headers: {
+                "Content-Type":"application/json",
+                "Accept":"*/*",
+                "Authorization": "Bearer " + localStorage.getItem('token')
+            }
+        }).then(res => res.json())
+            .then(data => {
+                if (data.Response === "You have already voted today") {
+                    this.props.addMessage('You have already voted today!', 'danger');
+                }
+                this.refreshVotes();
+                this.setState({
+                    voted: true
+                })
+            })
+    }
+
+    refreshVotes() {
+        fetch('http://localhost:5000/api/today', {
+            method: 'GET',
+            headers: {
+                "Content-Type":"application/json",
+                "Accept":"*/*"
+            }
+        }).then(res => res.json())
+            .then(data => this.setState({
+                posts: data
+            }))
     }
 
     componentDidMount() {
@@ -21,8 +52,7 @@ export default class TodayImage extends Component {
             method: 'GET',
             headers: {
                 "Content-Type":"application/json",
-                "Accept":"*/*",
-                "Authorization": "Bearer " + localStorage.getItem('token')
+                "Accept":"*/*"
             }
         }).then(res => res.json())
             .then(data => this.setState({
@@ -52,9 +82,20 @@ export default class TodayImage extends Component {
                         <div className='col-2'></div>
                     </div>
 
+                    <hr />
+
                     <div className='row'>
+                        <div className='col-12'>
+                            <h6 className='text-center'>Cast your vote wisely! You can only vote once per day!</h6>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div className='row mt-2'>
                         {this.state.posts.map((post, index) => <Post username={post.username} key={index} post_body={post.post_body} date_created={post.date_created} votes={post.votes} isLoggedIn={this.props.isLoggedIn} post_id={post.id} castVote={this.castVote} />)}
                     </div>
+
 
                     {this.props.isLoggedIn ?
                     <div className='row'>

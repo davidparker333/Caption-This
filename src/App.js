@@ -202,7 +202,7 @@ export default class App extends Component {
             <Route exact path='/' render={() => <Home image={this.state.image} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path='/login' render={() => <Login handleLogin={this.handleLogin} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path='/register' render={() => <Register handleRegister={this.handleRegister} addMessage={this.addMessage} />} />
-            <Route exact path='/today' render={() => <TodayImage image={this.state.image} isLoggedIn={this.state.isLoggedIn} />} />
+            <Route exact path='/today' render={() => <TodayImage image={this.state.image} isLoggedIn={this.state.isLoggedIn} addMessage={this.addMessage} />} />
             <Route exact path='/winners' render={() => <WinnerArchive image={this.state.image} />} />
             <Route exact path='/post/:id' render={({match}) => <PostDetail match={match} />} />
             <Route exact path='/post/update/:id' render={({match}) => <UpdatePost match={match} />} />
