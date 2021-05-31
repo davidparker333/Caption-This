@@ -11,6 +11,11 @@ export default class TodayImage extends Component {
         }
     }
 
+    castVote = (e) => {
+        e.preventDefault();
+        console.log(e.target.name);
+    }
+
     componentDidMount() {
         fetch('http://localhost:5000/api/today', {
             method: 'GET',
@@ -48,7 +53,7 @@ export default class TodayImage extends Component {
                     </div>
 
                     <div className='row'>
-                        {this.state.posts.map((post, index) => <Post username={post.username} key={index} post_body={post.post_body} date_created={post.date_created} votes={post.votes} isLoggedIn={this.props.isLoggedIn} />)}
+                        {this.state.posts.map((post, index) => <Post username={post.username} key={index} post_body={post.post_body} date_created={post.date_created} votes={post.votes} isLoggedIn={this.props.isLoggedIn} post_id={post.id} castVote={this.castVote} />)}
                     </div>
 
                     {this.props.isLoggedIn ?

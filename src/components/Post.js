@@ -14,7 +14,7 @@ export default class Post extends Component {
                                    
                                    {this.props.isLoggedIn ? 
                                     <button type="button" className="btn btn-outline-primary float-end  mx-3" data-bs-toggle="modal" data-bs-target="#votemodal">
-                                    {this.props.votes} votes! Vote for this Caption
+                                    {this.props.votes}{this.props.votes === 1 ? ' vote' : ' votes' }! Vote for this Caption
                                     </button> : <div></div>}
 
                                     
@@ -30,7 +30,8 @@ export default class Post extends Component {
                                         </div>
                                         <div className="modal-footer">
                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Nah</button>
-                                            <button type="button" className="btn btn-primary">Yep!</button>
+                                            {/* This button is showing an id of 2 on the event every time it's pressed. Trying to use to this to hit the vote endpoint */}
+                                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={this.props.castVote} name={this.props.post_id}>Yep!</button>
                                         </div>
                                         </div>
                                     </div>
