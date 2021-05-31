@@ -133,8 +133,7 @@ export default class App extends Component {
       }
     }).then(res => res.json())
       .then(data => {
-        let date = new Date();
-        if (data.date_created <= date.setDate(date.getDate()-1)) {
+        if (data.image_url === "None") {
           this.generateNewImage();
         } else {
         let new_image = data.image_url;
