@@ -10,6 +10,7 @@ import PostDetail from './views/PostDetail';
 import Register from './views/Register';
 import TodayImage from './views/TodayImage';
 import UpdatePost from './views/UpdatePost';
+import UpdateProfile from './views/UpdateProfile';
 import WinnerArchive from './views/WinnerArchive';
 
 export default class App extends Component {
@@ -202,6 +203,7 @@ export default class App extends Component {
             <Route exact path='/' render={() => <Home image={this.state.image} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path='/login' render={() => <Login handleLogin={this.handleLogin} isLoggedIn={this.state.isLoggedIn} />} />
             <Route exact path='/register' render={() => <Register handleRegister={this.handleRegister} addMessage={this.addMessage} />} />
+            <Route exact path='/updateprofile' render={() => <UpdateProfile addMessage={this.addMessage} />} />
             <Route exact path='/today' render={() => <TodayImage image={this.state.image} isLoggedIn={this.state.isLoggedIn} addMessage={this.addMessage} />} />
             <Route exact path='/winners' render={() => <WinnerArchive image={this.state.image} />} />
             <Route exact path='/post/:id' render={({match}) => <PostDetail match={match} />} />
